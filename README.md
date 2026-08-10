@@ -86,6 +86,17 @@ A superadmin user is seeded by default:
 
 **Ports:** The API listens on `localhost:3001` when run directly and `localhost:3002` when using Docker Compose.
 
+## Linked Frontends
+
+This API is shared by two Next.js frontends. Both authenticate against it and use the same JWT, so a user session is valid across both apps.
+
+| Frontend | Default Dev URL | Dashboard Route |
+|----------|-----------------|-----------------|
+| `incident-tracker-frontend` | http://localhost:3000 | `/dashboard` |
+| `death-report` | http://localhost:3001 | `/dashboard` |
+
+Both frontend origins must be listed in `allowedOrigins` (see `.env.example`) so CORS permits their requests. The example configuration allows `http://localhost:3000` and `http://localhost:3001`.
+
 ## Quick Usage
 
 Login to get a token:
