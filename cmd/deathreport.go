@@ -27,6 +27,11 @@ func (a *application) deathReport(c *gin.Context) {
 }
 
 func (a *application) updateDeathReport(c *gin.Context) {
+	userRole := c.GetString("userRole")
+	if userRole != "superadmin" && userRole != "admin" && userRole != "manager" {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "you are unauthorized to view this"})
+		return
+	}
 	var updateRequest db.DeathReport
 	if err := c.ShouldBindJSON(&updateRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("A bad request was passed: %v", err.Error())})
@@ -51,6 +56,11 @@ func (a *application) updateDeathReport(c *gin.Context) {
 }
 
 func (a *application) getDeathReports(c *gin.Context) {
+	userRole := c.GetString("userRole")
+	if userRole != "superadmin" && userRole != "admin" && userRole != "manager" {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "you are unauthorized to view this"})
+		return
+	}
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	dateFrom := c.Query("dateFrom")
@@ -98,6 +108,11 @@ func (a *application) getDeathReports(c *gin.Context) {
 }
 
 func (a *application) searchDeathReport(c *gin.Context) {
+	userRole := c.GetString("userRole")
+	if userRole != "superadmin" && userRole != "admin" && userRole != "manager" {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "you are unauthorized to view this"})
+		return
+	}
 	searchQuery := c.Query("searchQuery")
 	if searchQuery == "" {
 		a.getDeathReports(c)

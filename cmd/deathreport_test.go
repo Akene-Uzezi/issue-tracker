@@ -229,7 +229,7 @@ func TestGetDeathReports(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := gin.Default()
-	r.GET("/api/v1/deathReports", a.getDeathReports)
+	r.GET("/api/v1/deathReports", mockAuthMiddleware("superadmin"), a.getDeathReports)
 	w := httptest.NewRecorder()
 	dummyPayload, _ := json.Marshal(&map[string]any{
 		"test": "test",
@@ -259,7 +259,7 @@ func TestSearchDeathReportsNoQuery(t *testing.T) {
 	})
 
 	r := gin.Default()
-	r.GET("/api/v1/searchDeathReports", a.searchDeathReport)
+	r.GET("/api/v1/searchDeathReports", mockAuthMiddleware("superadmin"), a.searchDeathReport)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/api/v1/searchDeathReports", bytes.NewBuffer(dummyPayload))
 	r.ServeHTTP(w, req)
@@ -281,7 +281,7 @@ func TestSearchDeathReports(t *testing.T) {
 	})
 
 	r := gin.Default()
-	r.GET("/api/v1/searchDeathReports", a.searchDeathReport)
+	r.GET("/api/v1/searchDeathReports", mockAuthMiddleware("superadmin"), a.searchDeathReport)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/api/v1/searchDeathReports?searchQuery=cardiology", bytes.NewBuffer(dummyPayload))
 	r.ServeHTTP(w, req)
@@ -307,7 +307,7 @@ func TestSearchDeathReportsByDate(t *testing.T) {
 		"test": "test",
 	})
 	r := gin.Default()
-	r.GET("/api/v1/deathreports", a.getDeathReports)
+	r.GET("/api/v1/deathreports", mockAuthMiddleware("superadmin"), a.getDeathReports)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/api/v1/deathreports?dateFrom=2026-07-29&dateTo=2026-08-05", bytes.NewBuffer(dummyPayload))
 	r.ServeHTTP(w, req)
@@ -329,7 +329,7 @@ func TestGlobalSearchWithDate(t *testing.T) {
 	})
 
 	r := gin.Default()
-	r.GET("/api/v1/searchDeathReport", a.searchDeathReport)
+	r.GET("/api/v1/searchDeathReport", mockAuthMiddleware("superadmin"), a.searchDeathReport)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/api/v1/searchDeathReport?searchQuery=dr-2026&dateFrom=2026-07-29&dateTo=2026-08-05", bytes.NewBuffer(dummyPayload))
 	r.ServeHTTP(w, req)
