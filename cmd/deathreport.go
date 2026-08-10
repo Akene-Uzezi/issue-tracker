@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -21,6 +22,21 @@ func (a *application) deathReport(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	// Notify superadmins, admins and managers about the new death report so it
+	// surfaces in both frontends regardless of which app they are using.
+	created, err := a.models.Notifications.CreateForRoles(context, []string{"superadmin", "admin", "manager"}, db.Notification{
+		Type:      "death_report",
+		Title:     "New death report submitted",
+		Message:   fmt.Sprintf("Death report %s (%s) was submitted and is awaiting review.", deathReport.Ref, deathReport.Department),
+		Ref:       deathReport.Ref,
+		RelatedID: deathReport.ID,
+	})
+	if err != nil {
+		log.Printf("ERROR: failed to create death report notifications: %v", err)
+	} else {
+		log.Printf("INFO: created %d death report notification(s)", created)
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "The death has been reported"})

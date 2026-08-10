@@ -298,6 +298,33 @@ Search death reports (no auth required):
 curl "http://localhost:3002/api/v1/searchDeathReport?searchQuery=DR-001"
 ```
 
+## Notifications
+
+When a death report is submitted, the API creates a notification for every active `superadmin`, `admin`, and `manager`. Notifications are stored server-side and are shared across both frontends (Incident Tracker and Death Report), so a user sees them no matter which app they are currently using.
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/v1/notifications` | Any authenticated user | List the current user's notifications (newest first) |
+| PATCH | `/api/v1/notifications/read` | Any authenticated user | Mark all of the current user's notifications as read |
+| PATCH | `/api/v1/notifications/:id/read` | Any authenticated user | Mark a single notification as read |
+| DELETE | `/api/v1/notifications` | Any authenticated user | Clear (delete) all of the current user's notifications |
+
+A notification payload:
+
+```json
+{
+  "id": 12,
+  "userId": 3,
+  "type": "death_report",
+  "title": "New death report submitted",
+  "message": "Death report DR-001 (Ward A) was submitted and is awaiting review.",
+  "ref": "DR-001",
+  "relatedId": 7,
+  "read": false,
+  "createdAt": "2026-08-10T13:45:00Z"
+}
+```
+
 ## Role Permissions
 
 | Role | Permissions |
