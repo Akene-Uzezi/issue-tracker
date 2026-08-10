@@ -62,6 +62,10 @@ func (a *application) routes() http.Handler {
 		v1.PUT("/deathreport", a.authMiddleware(), a.updateDeathReport)
 		v1.GET("/deathreports", a.authMiddleware(), a.getDeathReports)
 		v1.GET("/searchDeathReport", a.authMiddleware(), a.searchDeathReport)
+		v1.GET("/notifications", a.authMiddleware(), a.getNotifications)
+		v1.PATCH("/notifications/read", a.authMiddleware(), a.markNotificationsRead)
+		v1.PATCH("/notifications/:id/read", a.authMiddleware(), a.markNotificationRead)
+		v1.DELETE("/notifications", a.authMiddleware(), a.clearNotifications)
 	}
 
 	return g
